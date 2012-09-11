@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Timmaeh.de - DisplayRotate jQuery Plugin</title>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="displayRotate.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#display").displayRotate({
+					entryClass: 'DR_entry',
+					progressBar: '.DR_progress',
+					progressRate: '.DR_percent',
+					switchDuration: 3000});
+				$("#changeDuration").click(function(){
+					var speed = Number($("#changeDurationVal").val());
+					if(speed < 500) speed = 1000;
+					$.displayRotate.update({switchDuration: speed});
+				});
+				$("#reverse").click(function(){
+					if($.displayRotate.options.reverse) $.displayRotate.update({reverse: 0});
+					else $.displayRotate.update({reverse: 1});
+				});
+				$(".next").click(function(){
+					$.displayRotate.next();
+				});
+				$(".last").click(function(){
+					$.displayRotate.last();
+				});
+			});
+		</script>
+		<style>
+			* {margin:0;padding:0;font-family:Arial, sans-serif;}
+			.DR_progress {height:5px;width:400px;background-color:#DDDDDD;}
+			.DR_percent {height:5px;width:0px;background-color:#AAAAAA;}
+			#display {height:100px;width:400px;overflow:hidden;position:relative;}
+			.DR_entry {height:80px;width:380px;padding:10px;text-align:center;font-size:60px;position:relative;}
+			.DR_entry .last {cursor:pointer;background-color: rgba(255, 255, 255, 0.5);bottom: 10px;font-size: 25px;left: 0;position: absolute;vertical-align: center;padding: 0px 3px 4px 2px;font-weight: bold;line-height: 20px;}
+			.DR_entry .next {cursor:pointer;background-color: rgba(255, 255, 255, 0.5);bottom: 10px;font-size: 25px;right: 0;position: absolute;vertical-align: center;padding: 0px 2px 4px 3px;font-weight: bold;line-height: 20px;}
+			
+			.green {background-color:#DDFFDD !important;}
+			.green .DR_percent {background-color:#00FF00 !important;}
+			
+			.red {background-color:#FFDDDD !important;}
+			.red .DR_percent {background-color:#FF0000 !important;}
+			
+		</style>
+	</head>
+	<body>
+		<div class="DR_progress">
+			<div class="DR_percent"></div>
+		</div>
+		<div id="display">
+			<div class="DR_entry" style="background-color:#FF7777;"><div class="last">&laquo;</div>display #1<div class="next">&raquo;</div></div>
+			<div class="DR_entry" style="background-color:#77FF77;"><div class="last">&laquo;</div>display #2<div class="next">&raquo;</div></div>
+			<div class="DR_entry" style="background-color:#7777FF;"><div class="last">&laquo;</div>display #3<div class="next">&raquo;</div></div>
+		</div>
+		<br /><br />
+		Multiple Progress Bars:
+		<div class="DR_progress green">
+			<div class="DR_percent"></div>
+		</div>
+		<div class="DR_progress red">
+			<div class="DR_percent"></div>
+		</div>
+		<br /><br />
+		Mouseover Stop:<br />
+		Animation stops on mouseover
+		<br /><br />
+		<input id="changeDurationVal" type="text" value="3000" /><input type="button" id="changeDuration" value="change duration" /><br /><br />
+		<input id="reverse" type="button" value="Reverse" />
+	</body>
+</html>
