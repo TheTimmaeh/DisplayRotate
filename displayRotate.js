@@ -1,5 +1,5 @@
 /*****
-    Copyright 2010-2012 - timmaeh.de
+	Copyright 2010-2012 - timmaeh.de
 	Description: DisplayRotate Plugin for jQuery
 	Author: Tim Elbert
 	Date: 21-06-2012
@@ -28,7 +28,7 @@ jQuery.DR = {
 		fadeDuration: 500,
 		width: 0,
 		reverse: 0
-		},
+	},
 
 	//Initiale Funktion, startet alle benötigten Routinen
 	init: function(options){
