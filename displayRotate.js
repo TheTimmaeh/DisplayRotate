@@ -117,20 +117,32 @@ jQuery.DR = {
 	},
 
 	//Funktionsaufruf für nächstes Display
-	next: function(options){
+	next: function(e){
+		var options = (typeof e.data == 'object') ? e.data : e; //Weiche für bind & on
 		$.DR.f.next(options);
 		return;
 	},
 
 	//Funktionsaufruf für letztes Display
-	last: function(options){
+	last: function(e){
+		var options = (typeof e.data == 'object') ? e.data : e; //Weiche für bind & on
 		$.DR.f.last(options);
 		return;
 	},
 
 	//Starte Zählintervall
-	startInterval: function(){
+	startInterval: function(e){
+		e = e || {resetSwitchCounter: 0};
 		if($.DR.vars.intervalActive > 0) return; //Kein Start, wenn Zählintervall bereits läuft
+		
+		var options = (typeof e.data == 'object') ? e.data : e; //Weiche für bind & on
+		
+		//Setzt die Progressbar zurück, wenn definiert
+		if(options.resetSwitchCounter){
+			$.DR.vars.switchCounter = 0;
+			$($.DR.options.progressRate).css('width', '0px');
+		}
+		
 		$.DR.vars.interval = setInterval('$.DR.progress()', 25);
 		$.DR.vars.intervalActive = 1;
 
@@ -141,16 +153,21 @@ jQuery.DR = {
 	},
 
 	//Stoppe Zählintervall
-	stoppInterval: function(event){
+	stoppInterval: function(e){
+		e = e || {};
+		
 		if($.DR.vars.intervalActive < 1) return; //Kein Stopp, wenn Zählintervall nicht läuft
 		clearInterval($.DR.vars.interval);
 		$.DR.vars.intervalActive = 0;
 		
-		//Definiere Bereich & Event für Zählintervall-Start
-		var new_event = (event.type == 'mouseover') ? 'mouseleave' : 'focusout';
-		$.DR.vars.target.unbind(event.type).bind(new_event, function(){
-			$.DR.startInterval();
-		});
+		//Funktionsaufruf von außen abfangen
+		if(typeof e.type != 'undefined'){
+			//Definiere Bereich & Event für Zählintervall-Start
+			var new_e = (e.type == 'mouseover') ? 'mouseleave' : 'focusout';
+			$.DR.vars.target.unbind(e.type).bind(new_e, function(){
+				$.DR.startInterval();
+			});
+		}
 	},
 
 	//Progress-Funktion: Setzt Switchcounter & Breite der ProgressRate
