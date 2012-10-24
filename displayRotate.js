@@ -13,7 +13,8 @@ jQuery.DR = {
 		target: '',
 		interval: '',
 		intervalActive: 0,
-		switchCounter: 0
+		switchCounter: 0,
+		activeAnimation: 0
 	},
 
 	//Externe Variablen, von außen steuerbar
@@ -54,79 +55,65 @@ jQuery.DR = {
 		return;
 	},
 
-	//Funktionscontainer
-	f: {
-
-		//Zeigt nächstes Display bei Funktionsaufruf
-		next: function(options){
-			options = options || {resetSwitchCounter: 0}; //Liest Optionen ein bzw. setzt Standartoption
+	//Zeigt nächstes Display bei Funktionsaufruf
+	next: function(options){
+		
+		if($.DR.vars.activeAnimation) return; //Verhindere Programmaufruf bei aktiver Animation
+		
+		options = options || {resetSwitchCounter: 0}; //Liest Optionen ein bzw. setzt Standartoption
+		options = (typeof options.data == 'object') ? options.data : options; //Kombatibilität mit .on() & .bind()
 			
-			//Überschreibt Funktionen bis Animationsende
-			$.DR.next = function(options){return;}
-			$.DR.last = function(options){return;}	
+		//Weitere Funktionsaufrufe verhindern
+		$.DR.vars.activeAnimation = 1;	
 
-			//Animation
-			$('.' + $.DR.options.currentDisplay).animate({'margin-top': '-' + $('.' + $.DR.options.currentDisplay).height() + 'px'}, $.DR.options.fadeDuration, function(){
-				$('.' + $.DR.options.currentDisplay).insertAfter('.' + $.DR.options.lastDisplay);
-				$('.' + $.DR.options.lastDisplay).removeClass($.DR.options.lastDisplay);
-				$('.' + $.DR.options.currentDisplay).removeClass($.DR.options.currentDisplay).addClass($.DR.options.lastDisplay).css('margin-top', '0');
-				$('.' + $.DR.options.nextDisplay).removeClass($.DR.options.nextDisplay).addClass($.DR.options.currentDisplay);
-				$('.' + $.DR.options.currentDisplay).next('.' + $.DR.options.entryClass).addClass($.DR.options.nextDisplay);
+		//Animation
+		$('.' + $.DR.options.currentDisplay).animate({'margin-top': '-' + $('.' + $.DR.options.currentDisplay).height() + 'px'}, $.DR.options.fadeDuration, function(){
+			$('.' + $.DR.options.currentDisplay).insertAfter('.' + $.DR.options.lastDisplay);
+			$('.' + $.DR.options.lastDisplay).removeClass($.DR.options.lastDisplay);
+			$('.' + $.DR.options.currentDisplay).removeClass($.DR.options.currentDisplay).addClass($.DR.options.lastDisplay).css('margin-top', '0');
+			$('.' + $.DR.options.nextDisplay).removeClass($.DR.options.nextDisplay).addClass($.DR.options.currentDisplay);
+			$('.' + $.DR.options.currentDisplay).next('.' + $.DR.options.entryClass).addClass($.DR.options.nextDisplay);
 
-				//Schreibt Funktionen in alte Funktionsaufrufe
-				$.DR.next = $.DR.f.next;
-				$.DR.last = $.DR.f.last;
-			});
+			//Animation beendet
+			$.DR.vars.activeAnimation = 0;
+		});
 
-			//Setzt die Progressbar zurück, wenn definiert
-			if(options.resetSwitchCounter){
-				$.DR.vars.switchCounter = 0;
-				$($.DR.options.progressRate).css('width', '0px');
-			}
-			return;
-		},
-
-		//Zeigt letztes Display bei Funktionsaufruf
-		last: function(options){
-			options = options || {resetSwitchCounter: 0}; //Liest Optionen ein bzw. setzt Standartoption
-
-			//Überschreibt Funktionen bis Animationsende
-			$.DR.next = function(options){return;}
-			$.DR.last = function(options){return;}
-
-			//Animation
-			$('.' + $.DR.options.lastDisplay).insertBefore('.' + $.DR.options.currentDisplay).css('margin-top', '-' + $('.' + $.DR.options.lastDisplay).height() + 'px');
-			$('.' + $.DR.options.lastDisplay).removeClass($.DR.options.lastDisplay).addClass('DR_temp_display');
-			$('.' + $.DR.options.nextDisplay).removeClass($.DR.options.nextDisplay).addClass($.DR.options.lastDisplay);
-			$('.' + $.DR.options.currentDisplay).removeClass($.DR.options.currentDisplay).addClass($.DR.options.nextDisplay);
-			$('.DR_temp_display').removeClass('DR_temp_display').addClass($.DR.options.currentDisplay);
-			$('.' + $.DR.options.currentDisplay).animate({'margin-top': '0px'}, $.DR.options.fadeDuration, function(){
-
-				//Schreibt Funktionen in alte Funktionsaufrufe
-				$.DR.next = $.DR.f.next;
-				$.DR.last = $.DR.f.last;
-			});
-
-			//Setzt die Progressbar zurück, wenn definiert
-			if(options.resetSwitchCounter){
-				$.DR.vars.switchCounter = 0;
-				$($.DR.options.progressRate).css('width', '0px');
-			}
-			return;
+		//Setzt die Progressbar zurück, wenn definiert
+		if(options.resetSwitchCounter){
+			$.DR.vars.switchCounter = 0;
+			$($.DR.options.progressRate).css('width', '0px');
 		}
-	},
-
-	//Funktionsaufruf für nächstes Display
-	next: function(e){
-		var options = (typeof e.data == 'object') ? e.data : e; //Weiche für bind & on
-		$.DR.f.next(options);
 		return;
 	},
 
-	//Funktionsaufruf für letztes Display
-	last: function(e){
-		var options = (typeof e.data == 'object') ? e.data : e; //Weiche für bind & on
-		$.DR.f.last(options);
+	//Zeigt letztes Display bei Funktionsaufruf
+	last: function(options){
+		
+		if($.DR.vars.activeAnimation) return; //Verhindere Programmaufruf bei aktiver Animation
+		
+		options = options || {resetSwitchCounter: 0}; //Liest Optionen ein bzw. setzt Standartoption
+		options = (typeof options.data == 'object') ? options.data : options; //Kombatibilität mit .on() & .bind()
+
+		//Weitere Funktionsaufrufe verhindern
+		$.DR.vars.activeAnimation = 1;
+
+		//Animation
+		$('.' + $.DR.options.lastDisplay).insertBefore('.' + $.DR.options.currentDisplay).css('margin-top', '-' + $('.' + $.DR.options.lastDisplay).height() + 'px');
+		$('.' + $.DR.options.lastDisplay).removeClass($.DR.options.lastDisplay).addClass('DR_temp_display');
+		$('.' + $.DR.options.nextDisplay).removeClass($.DR.options.nextDisplay).addClass($.DR.options.lastDisplay);
+		$('.' + $.DR.options.currentDisplay).removeClass($.DR.options.currentDisplay).addClass($.DR.options.nextDisplay);
+		$('.DR_temp_display').removeClass('DR_temp_display').addClass($.DR.options.currentDisplay);
+		$('.' + $.DR.options.currentDisplay).animate({'margin-top': '0px'}, $.DR.options.fadeDuration, function(){
+
+			//Animation beendet
+			$.DR.vars.activeAnimation = 0;
+		});
+
+		//Setzt die Progressbar zurück, wenn definiert
+		if(options.resetSwitchCounter){
+			$.DR.vars.switchCounter = 0;
+			$($.DR.options.progressRate).css('width', '0px');
+		}
 		return;
 	},
 
