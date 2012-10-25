@@ -27,6 +27,7 @@ jQuery.DR = {
 		entryClass: 'DR_entry',
 		switchDuration: 10000,
 		fadeDuration: 500,
+		easing: 'swing',
 		width: 0,
 		reverse: 0
 	},
@@ -67,7 +68,7 @@ jQuery.DR = {
 		$.DR.vars.activeAnimation = 1;	
 
 		//Animation
-		$('.' + $.DR.options.currentDisplay).animate({'margin-top': '-' + $('.' + $.DR.options.currentDisplay).height() + 'px'}, $.DR.options.fadeDuration, function(){
+		$('.' + $.DR.options.currentDisplay).animate({'margin-top': '-' + $('.' + $.DR.options.currentDisplay).height() + 'px'}, $.DR.options.fadeDuration, $.DR.options.easing, function(){
 			$('.' + $.DR.options.currentDisplay).insertAfter('.' + $.DR.options.lastDisplay);
 			$('.' + $.DR.options.lastDisplay).removeClass($.DR.options.lastDisplay);
 			$('.' + $.DR.options.currentDisplay).removeClass($.DR.options.currentDisplay).addClass($.DR.options.lastDisplay).css('margin-top', '0');
@@ -103,7 +104,7 @@ jQuery.DR = {
 		$('.' + $.DR.options.nextDisplay).removeClass($.DR.options.nextDisplay).addClass($.DR.options.lastDisplay);
 		$('.' + $.DR.options.currentDisplay).removeClass($.DR.options.currentDisplay).addClass($.DR.options.nextDisplay);
 		$('.DR_temp_display').removeClass('DR_temp_display').addClass($.DR.options.currentDisplay);
-		$('.' + $.DR.options.currentDisplay).animate({'margin-top': '0px'}, $.DR.options.fadeDuration, function(){
+		$('.' + $.DR.options.currentDisplay).animate({'margin-top': '0px'}, $.DR.options.fadeDuration, $.DR.options.easing, function(){
 
 			//Animation beendet
 			$.DR.vars.activeAnimation = 0;
