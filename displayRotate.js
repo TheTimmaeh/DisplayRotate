@@ -136,12 +136,12 @@ jQuery.DR = {
 
 		//Definiere Bereich & Event für Zählintervall-Stopp
 		$.DR.vars.target.unbind('mouseleave focusout').bind('mouseover focusin', function(event){
-			$.DR.stoppInterval(event);
+			$.DR.stopInterval(event);
 		});
 	},
 
 	//Stoppe Zählintervall
-	stoppInterval: function(e){
+	stopInterval: function(e){
 		e = e || {};
 		
 		if($.DR.vars.intervalActive < 1) return; //Kein Stopp, wenn Zählintervall nicht läuft
